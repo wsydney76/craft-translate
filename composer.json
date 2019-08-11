@@ -1,0 +1,40 @@
+{
+  "name": "wsydney76/translate",
+  "description": "Helps translating entries",
+  "type": "craft-plugin",
+  "version": "1.0.0",
+  "keywords": [
+    "craft",
+    "cms",
+    "craftcms",
+    "craft-plugin",
+    "translate"
+  ],
+  "support": {
+    "docs": "https://github.com/wsydney76/translate/blob/master/README.md",
+    "issues": "https://github.com/wsydney76/translate/issues"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "wsydney76",
+      "homepage": "https://github.com/wsydney76"
+    }
+  ],
+  "require": {
+    "craftcms/cms": "^3.2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "wsydney76\\translate\\": "src/"
+    }
+  },
+  "extra": {
+    "name": "translate",
+    "handle": "translate",
+    "hasCpSettings": false,
+    "hasCpSection": false,
+    "changelogUrl": "https://raw.githubusercontent.com/wsydney76/translate/master/CHANGELOG.md",
+    "class": "wsydney76\\translate\\Translate"
+  }
+}

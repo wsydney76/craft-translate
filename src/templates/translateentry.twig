@@ -1,0 +1,147 @@
+{# params from route: entryId, siteFromId, siteToId #}
+
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{# @var entryFrom \craft\elements\Entry #}
+{# @var entryTo \craft\elements\Entry #}
+{# @var entry \craft\elements\Entry #}
+{% import '_includes/forms' as forms %}
+{% from 'translate/macros/translate.twig' import heading %}
+{% from 'translate/macros/translate.twig' import content %}
+{% from 'translate/macros/translate.twig' import blockField %}
+{% from 'translate/macros/translate.twig' import supertableField %}
+{% from 'translate/macros/translate.twig' import matrixField %}
+
+
+
+{% requirePermission 'translate' %}
+
+{% extends "_layouts/cp" %}
+
+{% set siteFrom = craft.app.sites.siteById(siteFromId) %}
+{% if not siteFrom %}
+    {% exit 404 %}
+{% endif %}
+{% set siteTo = craft.app.sites.siteById(siteToId) %}
+{% if not siteTo %}
+    {% exit 404 %}
+{% endif %}
+
+{% set isDraft = craft.app.request.param('isDraft') %}
+
+{% set query = craft.entries.id(entryId).anyStatus().siteId(siteFrom.id) %}
+{% if isDraft %}
+    {% set query = query.drafts(true) %}
+{% endif %}
+
+{% set entryFrom = query.one() %}
+{% if not entryFrom %}
+    {% exit 404 %}
+{% endif %}
+
+{% set query = craft.entries.anyStatus().id(entryId).siteId(siteTo.id) %}
+{% if isDraft %}
+    {% set query = query.drafts(true) %}
+{% endif %}
+
+{% set entryTo = entry is defined ? entry : query.one() %}
+
+{% set title = 'Translate ' ~ entryFrom.section.name ~ ': ' ~ entryFrom.title %}
+{% set fullPageForm = true %}
+
+{% set editUrl = craft.app.request.param('editUrl') %}
+{% if not editUrl %}
+    {% set editUrl = craft.app.request.referrer %}
+{% endif %}
+
+{% block actionButton %}
+    <a class="btn" style="margin-right: 8px;" href="{{ editUrl }}">{{ 'Cancel'|t('app') }}</a>
+    <input type="submit" class="btn submit" value="{{ 'Save Translation'|t('app') }}">
+{% endblock %}
+
+{% block content %}
+
+    {% if entry is defined %}
+        <div style="font-weight:bold; color:red">There is an error!</div>
+        <ul>
+            {% for attr, errors in entry.errors %}
+                {% for error in errors %}
+                    <li>{{ attr }}: <span style="color:red">{{ error }}</span></li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {{ csrfInput() }}
+    {{ actionInput('translate/translate/save-entry') }}
+    {{ redirectInput(editUrl) }}
+    <input type="hidden" name="sectionId" value="{{ entryFrom.section.id }}">
+    <input type="hidden" name="entryId" value="{{ entryFrom.id }}">
+    <input type="hidden" name="siteId" value="{{ siteTo.id }}">
+    <input type="hidden" name="isDraft" value="{{ isDraft }}">
+    <input type="hidden" name="editUrl" value="{{ editUrl }}">
+
+    {{ heading('Title', true) }}
+    {{ content(entryFrom.title, entryTo.title, false , "title") }}
+
+    {% for tab in entryFrom.fieldLayout.tabs if tab.name != 'Status' %}
+
+
+        <h1 style="margin-top: 20px">{{ tab.name }}</h1>
+        {% for field in tab.fields %}
+            {% switch className(field) %}
+
+            {% case 'craft\\fields\\PlainText' %}
+                {% if field.translationMethod == 'language' %}
+                    {{ heading(field.name, field.required) }}
+                    {{ content(entryFrom[field.handle], entryTo[field.handle], field.multiline, "fields[#{field.handle}]", field.required) }}
+                {% endif %}
+            {% case 'craft\\fields\\Url' %}
+                {% if field.translationMethod == 'language' %}
+                    {{ heading(field.name, field.required) }}
+                    {{ content(entryFrom[field.handle], entryTo[field.handle], false, "fields[#{field.handle}]") }}
+                {% endif %}
+            {% case 'craft\\fields\\Matrix' %}
+                {{ matrixField(entryFrom, entryTo, field) }}
+            {% case 'verbb\\supertable\\fields\\SuperTableField' %}
+                {{ supertableField(entryFrom, entryTo, field) }}
+            {% default %}
+                {% if field.translationMethod == 'language' %}
+                    {{ heading(field.name) }}
+                    <p>- Not translatable or translation not yet supported -</p>
+                {% endif %}
+            {% endswitch %}
+
+        {% endfor %}
+    {% endfor %}
+
+
+{% endblock %}
+
+{% block details %}
+
+    <div style="margin:12px;">
+        <table class="data fullwidth collapsible">
+            <tbody>
+            <tr>
+                <th class="light">Enabled</th>
+                <td>
+                    <span class="status {{ entryFrom.enabled ? 'live' }}"></span>
+                    <span class="status {{ entryFrom.enabledForSite ? 'live' }}"></span>
+                </td>
+            </tr>
+
+
+            </tbody>
+        </table>
+
+    </div>
+
+
+{% endblock %}
+
+{% js %}
+    {% include 'translate/js/translate.js' %}
+{% endjs %}
+
+
+

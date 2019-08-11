@@ -1,0 +1,12 @@
+{% set primarySiteId = craft.app.sites.primarySite.id %}
+{% if entry.id and  entry.siteId  != primarySiteId and entry.isDraft %}
+    {% set headerHtml %}
+        <a class="btn submit"
+           href='{{ cpUrl("translate/translateentry/#{entry.id}/#{primarySiteId}/#{entry.siteId}") }}?isDraft={{ entry.isDraft }}'>Translate</a>
+    {% endset %}
+
+    {% js %}
+        $('#header .flex-nowrap').append(`
+        <div>{{ headerHtml|raw }}</div>`);
+    {% endjs %}
+{% endif %}

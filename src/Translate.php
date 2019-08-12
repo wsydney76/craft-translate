@@ -64,7 +64,7 @@ class Translate extends Plugin
         );
 
         // Register Edit Screen extensions
-        Craft::$app->view->hook('cp.entries.edit.details', function(&$context) {
+        Craft::$app->view->hook('cp.entries.edit.settings', function(&$context) {
             if ($context['entry'] != null) {
                 return Craft::$app->view->renderTemplate('translate/translatebutton.twig', ['entry' => $context['entry']]);
             }

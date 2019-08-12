@@ -80,8 +80,24 @@
     <input type="hidden" name="isDraft" value="{{ isDraft }}">
     <input type="hidden" name="editUrl" value="{{ editUrl }}">
 
+
+    <table class="data" style="font-weight:bold" width="95%">
+        <tr>
+            <td width="47%" style="vertical-align: top">
+                {{ 'From'|t('translate') }} {{ siteFrom.name }} ({{ siteFrom.language }})
+            </td>
+            <td width="6%" style="vertical-align: top"></td>
+            <td width="47%" style="vertical-align: top">
+                {{ 'To'|t('translate') }} {{ siteTo.name }} ({{ siteTo.language }})
+            </td>
+        </tr>
+    </table>
+
     {{ heading('Title', true) }}
     {{ content(entryFrom.title, entryTo.title, false , "title") }}
+
+    {{ heading('Slug', true) }}
+    {{ content(entryFrom.slug, entryTo.slug, false , "title") }}
 
     {% for tab in entryFrom.fieldLayout.tabs if tab.name != 'Status' %}
 
@@ -91,12 +107,12 @@
             {% switch className(field) %}
 
             {% case 'craft\\fields\\PlainText' %}
-                {% if field.translationMethod == 'language' %}
+                {% if field.translationMethod in ['language','site'] %}
                     {{ heading(field.name, field.required) }}
                     {{ content(entryFrom[field.handle], entryTo[field.handle], field.multiline, "fields[#{field.handle}]", field.required) }}
                 {% endif %}
             {% case 'craft\\fields\\Url' %}
-                {% if field.translationMethod == 'language' %}
+                {% if field.translationMethod in ['language','site'] %}
                     {{ heading(field.name, field.required) }}
                     {{ content(entryFrom[field.handle], entryTo[field.handle], false, "fields[#{field.handle}]") }}
                 {% endif %}
@@ -105,7 +121,7 @@
             {% case 'verbb\\supertable\\fields\\SuperTableField' %}
                 {{ supertableField(entryFrom, entryTo, field) }}
             {% default %}
-                {% if field.translationMethod == 'language' %}
+                {% if field.translationMethod in ['language','site'] and  field.localizeRelations %}
                     {{ heading(field.name) }}
                     <p>- Not translatable or translation not yet supported -</p>
                 {% endif %}

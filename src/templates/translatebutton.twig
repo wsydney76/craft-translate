@@ -1,12 +1,20 @@
-{% set primarySiteId = craft.app.sites.primarySite.id %}
-{% if entry.id and  entry.siteId  != primarySiteId and entry.isDraft %}
+{% from _self  import btn %}
+{% set primarySite = craft.app.sites.primarySite %}
+{% if entry.id and  entry.siteId  != primarySite.id and entry.isDraft %}
     {% set headerHtml %}
-        <a class="btn submit"
-           href='{{ cpUrl("translate/translateentry/#{entry.id}/#{primarySiteId}/#{entry.siteId}") }}?isDraft={{ entry.isDraft }}'>Translate</a>
+        {{ btn(entry.id, primarySite, entry.site) }}
     {% endset %}
 
-    {% js %}
+    {{ headerHtml|raw }}
+    
+    {#{% js %}
         $('#header .flex-nowrap').append(`
         <div>{{ headerHtml|raw }}</div>`);
-    {% endjs %}
+    {% endjs %}#}
 {% endif %}
+
+{% macro btn(id, from, to) %}
+    <a class="btn submit"
+       href='{{ cpUrl("translate/translateentry/#{id}/#{from.id}/#{to.id}") }}?isDraft=1'>
+        {{ 'Translate'|t('translate') }} {{ from.handle }} &gt; {{ to.handle }}</a>
+{% endmacro %}

@@ -3,19 +3,33 @@
 {% macro matrixField(entryFrom, entryTo, field) %}
     {% from _self import content %}
     {% from _self import heading %}
+
     {{ heading(field.name) }}
+
     {% set blocksEn = entryFrom.fieldValue(field.handle).anyStatus().all() %}
     {% set blocksDe = entryTo.fieldValue(field.handle).anyStatus().all() %}
+
     {% for i, blockFrom in blocksEn %}
         {% set blockTo = blocksDe[i] %}
+
         <h3>{{ blockFrom.type.name }}</h3>
+
         {% for blockField in blockFrom.type.fieldLayout.fields %}
-            {% if className(blockField) in ['craft\\fields\\PlainText'] and blockField.translationMethod == 'language' %}
+            {% if className(blockField) in ['craft\\fields\\PlainText']
+                and blockField.translationMethod in ['language','site'] %}
+
                 <input type="hidden" name="matrix[{{ field.handle }}][{{ blockTo.id }}][type]"
                        value="{{ blockTo.type.handle }}">
+
                 <h4>{{ blockField.name }} {{ blockField.required?'(Required)' }} ({{ blockFrom.id }})</h4>
-                {{ content(blockFrom[blockField.handle], blockTo[blockField.handle], blockField.multiline,
-                    "matrix[#{field.handle}][#{blockFrom.id}][fields][#{blockField.handle}]", blockField.required) }}
+
+                {{ content(
+                    blockFrom[blockField.handle],
+                    blockTo[blockField.handle],
+                    blockField.multiline,
+                    "matrix[#{field.handle}][#{blockFrom.id}][fields][#{blockField.handle}]",
+                    blockField.required) }}
+
             {% elseif className(blockField) == 'verbb\\supertable\\fields\\SuperTableField' %}
                 <h4>{{ blockField.name }} {{ blockField.required?'(Required)' }} ({{ blockFrom.id }})</h4>
                 <p>- Translation not yet supported -</p>
@@ -34,17 +48,27 @@
 {% macro supertableField(entryFrom, entryTo, field) %}
     {% from _self import content %}
     {% from _self import heading %}
+
     {{ heading(field.name) }}
+
     {% set blocksEn = entryFrom.fieldValue(field.handle).anyStatus().all() %}
     {% set blocksDe = entryTo.fieldValue(field.handle).anyStatus().all() %}
 
     {% for i, blockFrom in blocksEn %}
         {% set blockTo = blocksDe[i] %}
+
         {% for blockField in blockFrom.type.fieldLayout.fields %}
-            {% if className(blockField) in ['craft\\fields\\PlainText','craft\\fields\\Url'] and blockField.translationMethod == 'language' %}
+            {% if className(blockField) in ['craft\\fields\\PlainText','craft\\fields\\Url']
+                and blockField.translationMethod in ['language','site'] %}
+
                 <h4>{{ blockField.name }} {{ blockField.required?'(Required)' }} ({{ blockFrom.id }})</h4>
-                {{ content(blockFrom[blockField.handle], blockTo[blockField.handle], blockField.multiline,
+
+                {{ content(
+                    blockFrom[blockField.handle],
+                    blockTo[blockField.handle],
+                    blockField.multiline,
                     "supertable[#{field.handle}][#{blockFrom.id}][fields][#{blockField.handle}]") }}
+
             {% endif %}
         {% endfor %}
     {% endfor %}

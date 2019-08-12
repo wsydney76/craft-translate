@@ -13,7 +13,7 @@
 
 
 
-{% requirePermission 'translate' %}
+{% requirePermission 'accessPlugin-translate' %}
 
 {% extends "_layouts/cp" %}
 
@@ -97,7 +97,7 @@
     {{ content(entryFrom.title, entryTo.title, false , "title") }}
 
     {{ heading('Slug', true) }}
-    {{ content(entryFrom.slug, entryTo.slug, false , "title") }}
+    {{ content(entryFrom.slug, entryTo.slug, false , "slug") }}
 
     {% for tab in entryFrom.fieldLayout.tabs if tab.name != 'Status' %}
 

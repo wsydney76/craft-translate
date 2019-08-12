@@ -24,7 +24,7 @@ class TranslateController extends Controller
      */
     public function actionSaveEntry()
     {
-        $this->requirePermission('translate');
+        $this->requirePermission('accessPlugin-translate');
 
         $app = Craft::$app;
         $params = $app->request->getBodyParams();

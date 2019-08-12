@@ -55,8 +55,8 @@ class Translate extends Plugin
             UserPermissions::class,
             UserPermissions::EVENT_REGISTER_PERMISSIONS,
             function(RegisterUserPermissionsEvent $event) {
-                $event->permissions['Application translate Module'] = [
-                    'translate' => [
+                $event->permissions['Translate Plugin'] = [
+                    'accessPlugin-translate' => [
                         'label' => 'Use Translation Tools',
                     ]
                 ];

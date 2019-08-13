@@ -1,5 +1,6 @@
 <?php
 
 return [
-    'Translate' => 'Übersetzen'
+    'Translate' => 'Übersetzen',
+    'Enable translation tool' => 'Übersetzungstool aktivieren',
 ];

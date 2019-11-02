@@ -120,6 +120,12 @@
                         {{ content(entryFrom[field.handle], entryTo[field.handle], 1, "fields[#{field.handle}]", field.required) }}
                     {% endif %}
                 {% endfor %}
+                {% for extraField in config.extraMarkdownFields %}
+                    {% if className(field) == extraField %}
+                        {{ heading(field.name, field.required) }}
+                        {{ content(entryFrom[field.handle], entryTo[field.handle].rawContent, 1, "fields[#{field.handle}]", field.required) }}
+                    {% endif %}
+                {% endfor %}
             {% endswitch %}
 
         {% endfor %}

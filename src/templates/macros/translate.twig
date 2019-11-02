@@ -44,6 +44,20 @@
                     "matrix[#{field.handle}][#{blockFrom.id}][fields][#{blockField.handle}]",
                     blockField.required) }}
 
+            {% elseif className(blockField) in config.extraMarkdownFields %}
+                {# TODO: Avoid duplicate code #}
+                <input type="hidden" name="matrix[{{ field.handle }}][{{ blockTo.id }}][type]"
+                       value="{{ blockTo.type.handle }}">
+
+                <h4>{{ blockField.name }} {{ blockField.required?'(Required)' }} ({{ blockFrom.id }})</h4>
+
+                {{ content(
+                    blockFrom[blockField.handle].rawContent,
+                    blockTo[blockField.handle].rawContent,
+                    1,
+                    "matrix[#{field.handle}][#{blockFrom.id}][fields][#{blockField.handle}]",
+                    blockField.required) }}
+
             {% elseif className(blockField) == 'verbb\\supertable\\fields\\SuperTableField' %}
                 <h4>{{ blockField.name }} {{ blockField.required?'(Required)' }} ({{ blockFrom.id }})</h4>
                 <p>- Translation not yet supported -</p>

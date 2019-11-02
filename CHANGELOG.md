@@ -1,8 +1,8 @@
 # Release Notes for Translation
 
-## 1.1 2019-10-02
+## 1.1.1 2019-10-02
 
-* Added configurable extra text fields.
+* Added configurable extra text fields and markdown fields with a rawContent method.
 * Restricted translations to drafts.
 
 ## 1.0.1 2019-08-15

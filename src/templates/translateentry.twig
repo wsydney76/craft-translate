@@ -26,32 +26,25 @@
     {% exit 404 %}
 {% endif %}
 
-{% set isDraft = craft.app.request.param('isDraft') %}
+{% set query = craft.entries.id(entryId).drafts(true).anyStatus().siteId(siteFrom.id) %}
 
-{% set query = craft.entries.id(entryId).anyStatus().siteId(siteFrom.id) %}
-{% if isDraft %}
-    {% set query = query.drafts(true) %}
-{% endif %}
 
 {% set entryFrom = query.one() %}
 {% if not entryFrom %}
     {% exit 404 %}
 {% endif %}
 
-{% set query = craft.entries.anyStatus().id(entryId).siteId(siteTo.id) %}
-{% if isDraft %}
-    {% set query = query.drafts(true) %}
-{% endif %}
+{% set query = craft.entries.anyStatus().drafts(true).id(entryId).siteId(siteTo.id) %}
+
 
 {% set entryTo = entry is defined ? entry : query.one() %}
 
 {% set title = 'Translate ' ~ entryFrom.section.name ~ ': ' ~ entryFrom.title %}
 {% set fullPageForm = true %}
 
-{% set editUrl = craft.app.request.param('editUrl') %}
-{% if not editUrl %}
-    {% set editUrl = craft.app.request.referrer %}
-{% endif %}
+{% set editUrl = cpUrl("entries/#{entryFrom.section.handle}/#{entryFrom.id}", {site: entryFrom.site.handle, draftId: entryFrom.draftId}) %}
+
+{% set config = craft.app.plugins.plugin('translate').settings %}
 
 {% block actionButton %}
     <a class="btn" style="margin-right: 8px;" href="{{ editUrl }}">{{ 'Cancel'|t('app') }}</a>
@@ -77,7 +70,7 @@
     <input type="hidden" name="sectionId" value="{{ entryFrom.section.id }}">
     <input type="hidden" name="entryId" value="{{ entryFrom.id }}">
     <input type="hidden" name="siteId" value="{{ siteTo.id }}">
-    <input type="hidden" name="isDraft" value="{{ isDraft }}">
+    <input type="hidden" name="isDraft" value="1">
     <input type="hidden" name="editUrl" value="{{ editUrl }}">
 
 
@@ -117,14 +110,16 @@
                     {{ content(entryFrom[field.handle], entryTo[field.handle], false, "fields[#{field.handle}]") }}
                 {% endif %}
             {% case 'craft\\fields\\Matrix' %}
-                {{ matrixField(entryFrom, entryTo, field) }}
+                {{ matrixField(entryFrom, entryTo, field, config) }}
             {% case 'verbb\\supertable\\fields\\SuperTableField' %}
-                {{ supertableField(entryFrom, entryTo, field) }}
+                {{ supertableField(entryFrom, entryTo, field, config) }}
             {% default %}
-                {% if field.translationMethod in ['language','site'] and  field.localizeRelations %}
-                    {{ heading(field.name) }}
-                    <p>- Not translatable or translation not yet supported -</p>
-                {% endif %}
+                {% for extraField in config.extraTextFields %}
+                	{% if className(field) == extraField %}
+                        {{ heading(field.name, field.required) }}
+                        {{ content(entryFrom[field.handle], entryTo[field.handle], 1, "fields[#{field.handle}]", field.required) }}
+                    {% endif %}
+                {% endfor %}
             {% endswitch %}
 
         {% endfor %}

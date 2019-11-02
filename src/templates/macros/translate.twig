@@ -1,6 +1,6 @@
 
 {# @var blockField \craft\fields\Assets #}
-{% macro matrixField(entryFrom, entryTo, field) %}
+{% macro matrixField(entryFrom, entryTo, field, config) %}
     {% from _self import content %}
     {% from _self import heading %}
 
@@ -30,6 +30,20 @@
                     "matrix[#{field.handle}][#{blockFrom.id}][fields][#{blockField.handle}]",
                     blockField.required) }}
 
+            {% elseif className(blockField) in config.extraTextFields %}
+                {# TODO: Avoid duplicate code #}
+                <input type="hidden" name="matrix[{{ field.handle }}][{{ blockTo.id }}][type]"
+                       value="{{ blockTo.type.handle }}">
+
+                <h4>{{ blockField.name }} {{ blockField.required?'(Required)' }} ({{ blockFrom.id }})</h4>
+
+                {{ content(
+                    blockFrom[blockField.handle],
+                    blockTo[blockField.handle],
+                    1,
+                    "matrix[#{field.handle}][#{blockFrom.id}][fields][#{blockField.handle}]",
+                    blockField.required) }}
+
             {% elseif className(blockField) == 'verbb\\supertable\\fields\\SuperTableField' %}
                 <h4>{{ blockField.name }} {{ blockField.required?'(Required)' }} ({{ blockFrom.id }})</h4>
                 <p>- Translation not yet supported -</p>
@@ -45,7 +59,7 @@
 {% endmacro %}
 
 
-{% macro supertableField(entryFrom, entryTo, field) %}
+{% macro supertableField(entryFrom, entryTo, field, config) %}
     {% from _self import content %}
     {% from _self import heading %}
 

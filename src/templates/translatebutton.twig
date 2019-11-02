@@ -1,27 +1,22 @@
-{% from _self  import btn %}
-
 <div id="translate-wrapper">
     {% if entry.id and entry.isDraft %}
 
-        {% for site in craft.app.sites.allSites if site.id != entry.site.id %}
-            {{ btn(entry.id, entry.site, site, entry.isDraft) }}
+        {% set from = entry.site %}
+        {% for to in craft.app.sites.allSites if to.id != from.id %}
+
+            <a id="translate-btn-{{ from.id }}-{{ to.id }}" class="btn submit" style="display:inline"
+               href='{{ cpUrl("translate/translateentry/#{entry.id}/#{from.id}/#{to.id}", {site:from.handle, draftId:entry.draftId}) }}'>
+                {{ 'Translate'|t('translate') }} {{ from.handle }} &gt; {{ to.handle }}</a>
         {% endfor %}
 
     {% endif %}
 </div>
 
-{% macro btn(id, from, to, isDraft) %}
-    <a id="translate-btn-{{ from.id }}-{{ to.id }}" class="btn submit" style="display:{{ isDraft ? 'inline' : 'none' }}"
-       href='{{ cpUrl("translate/translateentry/#{isDraft ? id : '§'}/#{from.id}/#{to.id}") }}?isDraft=1'>
-        {{ 'Translate'|t('translate') }} {{ from.handle }} &gt; {{ to.handle }}</a>
-{% endmacro %}
-
-
 
 {% js %}
-    if (window.draftEditor) {
+if (window.draftEditor) {
     window.draftEditor.on('createDraft', function() {
-    $('#translate-wrapper').html('<a href="javascript:location.reload()">{{ 'Enable translation tool'|t('translate') }}</a> ');
-    });
-    }
+        $('#translate-wrapper').html('<a href="javascript:location.reload()">{{ 'Enable translation tool'|t('translate') }}</a> ');
+    })
+}
 {% endjs %}

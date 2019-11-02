@@ -8,6 +8,7 @@ use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\services\UserPermissions;
 use craft\web\UrlManager;
+use wsydney76\translate\models\SettingsModel;
 use wsydney76\translate\services\TranslateService;
 use yii\base\Event;
 
@@ -71,5 +72,10 @@ class Translate extends Plugin
         });
 
     }
+
+   protected function createSettingsModel()
+   {
+       return new SettingsModel();
+   }
 
 }

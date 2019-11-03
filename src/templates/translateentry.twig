@@ -46,6 +46,7 @@
 
 {% set config = craft.app.plugins.plugin('translate').settings %}
 
+
 {% block actionButton %}
     <a class="btn" style="margin-right: 8px;" href="{{ editUrl }}">{{ 'Cancel'|t('app') }}</a>
     <input type="submit" class="btn submit" value="{{ 'Save Translation'|t('app') }}">
@@ -86,8 +87,10 @@
         </tr>
     </table>
 
-    {{ heading('Title', true) }}
-    {{ content(entryFrom.title, entryTo.title, false , "title") }}
+    {% if entryFrom.type.hasTitleField %}
+        {{ heading('Title', true) }}
+        {{ content(entryFrom.title, entryTo.title, false , "title") }}
+    {% endif %}
 
     {{ heading('Slug', true) }}
     {{ content(entryFrom.slug, entryTo.slug, false , "slug") }}

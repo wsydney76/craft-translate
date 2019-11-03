@@ -31,7 +31,9 @@ class TranslateService extends Component
         $app = Craft::$app;
         $params = $app->request->getBodyParams();
 
-        $entry->title = $params['title'];
+        if ($entry->type->hasTitleField) {
+            $entry->title = $params['title'];
+        }
         $entry->slug = '';
 
         $supertable = $app->request->getBodyParam('supertable');

@@ -102,9 +102,20 @@
     {% endfor %}
 {% endmacro %}
 
-{% macro heading(title) %}
+{% macro heading(title, type='field') %}
     <div class="field">
-        <div class="heading"><label>{{ title }}</label></div>
+        {% switch type %}
+
+        {% case "tab" %}
+            <h1>{{ title }}</h1>
+        {% case "matrix" %}
+            <h2>{{ title }}</h2>
+        {% case "block" %}
+            <h3>{{ title }}</h3>
+        {% default %}
+            <div class="heading"><label>{{ title }}</label></div>
+        {% endswitch %}
+
     </div>
 {% endmacro %}
 

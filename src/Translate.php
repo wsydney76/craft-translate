@@ -8,8 +8,11 @@ use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\services\UserPermissions;
 use craft\web\UrlManager;
+use wsydney76\extendedmarkdown\fields\MarkdownField;
 use wsydney76\translate\models\SettingsModel;
+use wsydney76\translate\models\TranslateField;
 use wsydney76\translate\services\TranslateService;
+use wsydney76 \translate\events\TranslateEvent;
 use yii\base\Event;
 
 /**
@@ -70,6 +73,8 @@ class Translate extends Plugin
                 return Craft::$app->view->renderTemplate('translate/translatebutton.twig', ['entry' => $context['entry']]);
             }
         });
+
+
 
     }
 

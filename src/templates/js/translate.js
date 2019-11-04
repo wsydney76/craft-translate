@@ -3,7 +3,7 @@ function translateGoogle(id) {
     textFrom = document.getElementById(id + '_from').innerHTML;
 
     var url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl="
-        + '{{ siteFrom.language[:2] }}' + "&tl=" + '{{ siteTo.language[:2] }}' + "&dt=t";
+        + '{{ translateEntry.siteFrom.language[:2] }}' + "&tl=" + '{{ translateEntry.siteTo.language[:2] }}' + "&dt=t";
 
     $.post(url, {q: textFrom})
         .done(function(data) {

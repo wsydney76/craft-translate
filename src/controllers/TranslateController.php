@@ -15,19 +15,19 @@ use yii\web\Response;
 
 class TranslateController extends Controller
 {
-    protected $allowAnonymous = true;
 
-    // http://temp1.local/admin/translate/translateentry/2185/1/2
+
+    // http://plugins.local/admin/translate/translateentry/97/1/2
     public function actionTranslateEntry($entryId, $siteFromId, $siteToId) {
 
 
-        $entry = new TranslateEntry($entryId, $siteFromId, $siteToId);
+        $translateEntry = new TranslateEntry($entryId, $siteFromId, $siteToId);
 
-        if (!$entry->entryFrom || !$entry->entryTo) {
+        if (!$translateEntry->source || !$translateEntry->target) {
             throw  new NotFoundHttpException();
         }
 
-        Craft::dd($entry);
+        return Craft::$app->getView()->renderPageTemplate('translate/translateentry', ['translateEntry' => $translateEntry]);
     }
 
 

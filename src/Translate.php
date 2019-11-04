@@ -47,7 +47,7 @@ class Translate extends Plugin
 
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event) {
             //$event->rules['translate/translate'] = 'translate/element/translate';
-            $event->rules['translate/translateentry/<entryId:[\d]+>/<siteFromId:[\d]+>/<siteToId:[\d]+>'] = ['template' => 'translate/translateentry'];
+            $event->rules['translate/translateentry/<entryId:[\d]+>/<siteFromId:[\d]+>/<siteToId:[\d]+>'] = 'translate/translate/translate-entry';
             // \Craft::dd($event->rules);
         });
 

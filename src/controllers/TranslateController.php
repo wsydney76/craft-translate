@@ -5,6 +5,7 @@ namespace wsydney76\translate\controllers;
 use Craft;
 use craft\elements\Entry;
 use craft\web\Controller;
+use wsydney76\translate\models\TranslateEntry;
 use wsydney76\translate\Translate;
 use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
@@ -15,6 +16,20 @@ use yii\web\Response;
 class TranslateController extends Controller
 {
     protected $allowAnonymous = true;
+
+    // http://temp1.local/admin/translate/translateentry/2185/1/2
+    public function actionTranslateEntry($entryId, $siteFromId, $siteToId) {
+
+
+        $entry = new TranslateEntry($entryId, $siteFromId, $siteToId);
+
+        if (!$entry->entryFrom || !$entry->entryTo) {
+            throw  new NotFoundHttpException();
+        }
+
+        Craft::dd($entry);
+    }
+
 
     /**
      * @return NotFoundHttpException|Response|null

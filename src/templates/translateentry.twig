@@ -66,11 +66,11 @@
 
     {% if entryFrom.type.hasTitleField %}
         {{ heading('Title', 'field') }}
-        {{ content(entryFrom.title, translateEntry.target.title, false , "title") }}
+        {{ content(entryFrom.title, translateEntry.target.title , "title") }}
     {% endif %}
 
     {{ heading('Slug', 'field') }}
-    {{ content(entryFrom.slug, translateEntry.target.slug, false , "slug") }}
+    {{ content(entryFrom.slug, translateEntry.target.slug , "slug") }}
 
     {% for item in translateEntry.items %}
         {{ heading(item.caption, item.type) }}
@@ -78,48 +78,9 @@
             {% if not item.isSimpleField %}
                 <input type="hidden" name="{{ item.blockType.name }}" value="{{ item.blockType.value }}">
             {% endif %}
-            {{ content(item.sourceValue, item.targetValue, item.multiline, item.formName, item.field.required) }}
+            {{ content(item.sourceValue, item.targetValue, item.formName, item.field.required) }}
         {% endif %}
     {% endfor %}
-
-    {#{% for tab in entryFrom.fieldLayout.tabs if tab.name != 'Status' %}
-
-
-        <h1 style="margin-top: 20px">{{ tab.name }}</h1>
-        {% for field in tab.fields %}
-            {% switch className(field) %}
-
-            {% case 'craft\\fields\\PlainText' %}
-                {% if field.translationMethod in ['language','site'] %}
-                    {{ heading(field.name, field.required) }}
-                    {{ content(entryFrom[field.handle], entryTo[field.handle], field.multiline, "fields[#{field.handle}]", field.required) }}
-                {% endif %}
-            {% case 'craft\\fields\\Url' %}
-                {% if field.translationMethod in ['language','site'] %}
-                    {{ heading(field.name, field.required) }}
-                    {{ content(entryFrom[field.handle], entryTo[field.handle], false, "fields[#{field.handle}]") }}
-                {% endif %}
-            {% case 'craft\\fields\\Matrix' %}
-                {{ matrixField(entryFrom, entryTo, field, config) }}
-            {% case 'verbb\\supertable\\fields\\SuperTableField' %}
-                {{ supertableField(entryFrom, entryTo, field, config) }}
-            {% default %}
-                {% for extraField in config.extraTextFields %}
-                	{% if className(field) == extraField %}
-                        {{ heading(field.name, field.required) }}
-                        {{ content(entryFrom[field.handle], entryTo[field.handle], 1, "fields[#{field.handle}]", field.required) }}
-                    {% endif %}
-                {% endfor %}
-                {% for extraField in config.extraMarkdownFields %}
-                    {% if className(field) == extraField %}
-                        {{ heading(field.name, field.required) }}
-                        {{ content(entryFrom[field.handle].rawContent, entryTo[field.handle].rawContent, 1, "fields[#{field.handle}]", field.required) }}
-                    {% endif %}
-                {% endfor %}
-            {% endswitch %}
-
-        {% endfor %}
-    {% endfor %}#}
 
 
 {% endblock %}

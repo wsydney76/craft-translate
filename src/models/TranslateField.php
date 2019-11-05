@@ -21,7 +21,6 @@ class TranslateField extends Model
     public $targetOwner;
     public $caption = '';
     public $ownerField;
-    public $multiline = true;
     public $isSimpleField = true;
 
     public function __construct(TranslateEntry $entry, Field $field, MatrixBlock $owner = null)
@@ -31,7 +30,6 @@ class TranslateField extends Model
         $this->field = $field;
         $this->owner = $owner;
         $this->caption = $field->name;
-        $this->multiline = (bool)$field->getContentColumnType() == 'text';
 
         if ($owner) {
             $this->targetOwner = MatrixBlock::find()->id($owner->id)->siteId($entry->siteTo->id)->one();

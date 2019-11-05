@@ -1,107 +1,3 @@
-
-{# @var blockField \craft\fields\Assets #}
-{% macro matrixField(entryFrom, entryTo, field, config) %}
-    {% from _self import content %}
-    {% from _self import heading %}
-
-    {{ heading(field.name) }}
-
-    {% set blocksEn = entryFrom.fieldValue(field.handle).anyStatus().all() %}
-    {% set blocksDe = entryTo.fieldValue(field.handle).anyStatus().all() %}
-
-    {% for i, blockFrom in blocksEn %}
-        {% set blockTo = blocksDe[i] %}
-
-        <h3>{{ blockFrom.type.name }}</h3>
-
-        {% for blockField in blockFrom.type.fieldLayout.fields %}
-            {% if className(blockField) in ['craft\\fields\\PlainText']
-                and blockField.translationMethod in ['language','site'] %}
-
-                <input type="hidden" name="matrix[{{ field.handle }}][{{ blockTo.id }}][type]"
-                       value="{{ blockTo.type.handle }}">
-
-                <h4>{{ blockField.name }} {{ blockField.required?'(Required)' }} ({{ blockFrom.id }})</h4>
-
-                {{ content(
-                    blockFrom[blockField.handle],
-                    blockTo[blockField.handle],
-                    blockField.multiline,
-                    "matrix[#{field.handle}][#{blockFrom.id}][fields][#{blockField.handle}]",
-                    blockField.required) }}
-
-            {% elseif className(blockField) in config.extraTextFields %}
-                {# TODO: Avoid duplicate code #}
-                <input type="hidden" name="matrix[{{ field.handle }}][{{ blockTo.id }}][type]"
-                       value="{{ blockTo.type.handle }}">
-
-                <h4>{{ blockField.name }} {{ blockField.required?'(Required)' }} ({{ blockFrom.id }})</h4>
-
-                {{ content(
-                    blockFrom[blockField.handle],
-                    blockTo[blockField.handle],
-                    1,
-                    "matrix[#{field.handle}][#{blockFrom.id}][fields][#{blockField.handle}]",
-                    blockField.required) }}
-
-            {% elseif className(blockField) in config.extraMarkdownFields %}
-                {# TODO: Avoid duplicate code #}
-                <input type="hidden" name="matrix[{{ field.handle }}][{{ blockTo.id }}][type]"
-                       value="{{ blockTo.type.handle }}">
-
-                <h4>{{ blockField.name }} {{ blockField.required?'(Required)' }} ({{ blockFrom.id }})</h4>
-
-                {{ content(
-                    blockFrom[blockField.handle].rawContent,
-                    blockTo[blockField.handle].rawContent,
-                    1,
-                    "matrix[#{field.handle}][#{blockFrom.id}][fields][#{blockField.handle}]",
-                    blockField.required) }}
-
-            {% elseif className(blockField) == 'verbb\\supertable\\fields\\SuperTableField' %}
-                <h4>{{ blockField.name }} {{ blockField.required?'(Required)' }} ({{ blockFrom.id }})</h4>
-                <p>- Translation not yet supported -</p>
-                {# supertableField(blockFrom, blockTo, blockField) #}
-            {% elseif className(blockField) == 'craft\\fields\\Assets' %}
-                {% if blockField.localizeRelations %}
-                    <h4>{{ blockField.name }}</h4>
-                    Localized Images are not supported
-                {% endif %}
-            {% endif %}
-        {% endfor %}
-    {% endfor %}
-{% endmacro %}
-
-
-{% macro supertableField(entryFrom, entryTo, field, config) %}
-    {% from _self import content %}
-    {% from _self import heading %}
-
-    {{ heading(field.name) }}
-
-    {% set blocksEn = entryFrom.fieldValue(field.handle).anyStatus().all() %}
-    {% set blocksDe = entryTo.fieldValue(field.handle).anyStatus().all() %}
-
-    {% for i, blockFrom in blocksEn %}
-        {% set blockTo = blocksDe[i] %}
-
-        {% for blockField in blockFrom.type.fieldLayout.fields %}
-            {% if className(blockField) in ['craft\\fields\\PlainText','craft\\fields\\Url']
-                and blockField.translationMethod in ['language','site'] %}
-
-                <h4>{{ blockField.name }} {{ blockField.required?'(Required)' }} ({{ blockFrom.id }})</h4>
-
-                {{ content(
-                    blockFrom[blockField.handle],
-                    blockTo[blockField.handle],
-                    blockField.multiline,
-                    "supertable[#{field.handle}][#{blockFrom.id}][fields][#{blockField.handle}]") }}
-
-            {% endif %}
-        {% endfor %}
-    {% endfor %}
-{% endmacro %}
-
 {% macro heading(title, type='field') %}
     <div class="field">
         {% switch type %}
@@ -119,7 +15,7 @@
     </div>
 {% endmacro %}
 
-{% macro content(value1, value2, multiline, name, required=false ) %}
+{% macro content(value1, value2, name, required=false ) %}
     {% from _self import translationLinks %}
     {% if value1 %}
         <table class="data" width="95%">

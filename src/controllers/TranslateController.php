@@ -16,10 +16,9 @@ use yii\web\Response;
 class TranslateController extends Controller
 {
 
-
     // http://plugins.local/admin/translate/translateentry/97/1/2
-    public function actionTranslateEntry($entryId, $siteFromId, $siteToId) {
-
+    public function actionTranslateEntry($entryId, $siteFromId, $siteToId)
+    {
 
         $translateEntry = new TranslateEntry($entryId, $siteFromId, $siteToId);
 
@@ -29,7 +28,6 @@ class TranslateController extends Controller
 
         return Craft::$app->getView()->renderPageTemplate('translate/translateentry', ['translateEntry' => $translateEntry]);
     }
-
 
     /**
      * @return NotFoundHttpException|Response|null
@@ -70,7 +68,5 @@ class TranslateController extends Controller
         $app->session->setNotice('Translations saved');
         return $this->redirectToPostedUrl();
     }
-
-
 
 }

@@ -8,7 +8,6 @@ use craft\base\Model;
 use craft\elements\Entry;
 use craft\fields\Matrix;
 use craft\models\FieldLayoutTab;
-use function get_class;
 
 class TranslateEntry extends Model
 {

@@ -1,0 +1,18 @@
+{# @var entry \wsydney76\translate\models\TranslateEntry #}
+
+{% for item in translateEntry.items %}
+    Type: {{ item.type }} <br/>
+    Caption: {{ item.caption }} <br/>
+    {% if item.type == 'field' %}
+        Form Name From: {{ item.sourceFormName }}<br/>
+        Form Name To:   {{ item.targetFormName }}<br/>
+        Multiline: {{ item.multiline }}<br/>
+        {{ dump (item.blockType) }}
+        <h3>Source</h3>
+        <textarea name="" id="" cols="40" rows="5">{{ item.sourceValue }}</textarea>
+        <h3>Target</h3>
+        <textarea name="" id="" cols="40" rows="5">{{ item.targetValue }}</textarea>
+
+    {% endif %}
+    <hr/>
+{% endfor %}

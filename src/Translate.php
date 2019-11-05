@@ -8,8 +8,11 @@ use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\services\UserPermissions;
 use craft\web\UrlManager;
+use wsydney76\extendedmarkdown\fields\MarkdownField;
 use wsydney76\translate\models\SettingsModel;
+use wsydney76\translate\models\TranslateField;
 use wsydney76\translate\services\TranslateService;
+use wsydney76 \translate\events\TranslateEvent;
 use yii\base\Event;
 
 /**
@@ -47,7 +50,7 @@ class Translate extends Plugin
 
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event) {
             //$event->rules['translate/translate'] = 'translate/element/translate';
-            $event->rules['translate/translateentry/<entryId:[\d]+>/<siteFromId:[\d]+>/<siteToId:[\d]+>'] = ['template' => 'translate/translateentry'];
+            $event->rules['translate/translateentry/<entryId:[\d]+>/<siteFromId:[\d]+>/<siteToId:[\d]+>'] = 'translate/translate/translate-entry';
             // \Craft::dd($event->rules);
         });
 
@@ -70,6 +73,8 @@ class Translate extends Plugin
                 return Craft::$app->view->renderTemplate('translate/translatebutton.twig', ['entry' => $context['entry']]);
             }
         });
+
+
 
     }
 

@@ -1,5 +1,7 @@
-# Translation Plugin
+# Translate Plugin
 
-Tbd.
+Simple Proof of Concept for a translation helper.
 
-(This is a mess. Needs serious rework, but may serve as a starting point.)
+Please note that this plugin only handles a subset of all possible multi site setups.
+
+Supports only text fields.

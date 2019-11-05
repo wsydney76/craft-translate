@@ -5,6 +5,7 @@ namespace wsydney76\translate\controllers;
 use Craft;
 use craft\elements\Entry;
 use craft\web\Controller;
+use wsydney76\translate\models\TranslateEntry;
 use wsydney76\translate\Translate;
 use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
@@ -14,7 +15,19 @@ use yii\web\Response;
 
 class TranslateController extends Controller
 {
-    protected $allowAnonymous = true;
+
+    // http://plugins.local/admin/translate/translateentry/97/1/2
+    public function actionTranslateEntry($entryId, $siteFromId, $siteToId)
+    {
+
+        $translateEntry = new TranslateEntry($entryId, $siteFromId, $siteToId);
+
+        if (!$translateEntry->source || !$translateEntry->target) {
+            throw  new NotFoundHttpException();
+        }
+
+        return Craft::$app->getView()->renderPageTemplate('translate/translateentry', ['translateEntry' => $translateEntry]);
+    }
 
     /**
      * @return NotFoundHttpException|Response|null
@@ -55,7 +68,5 @@ class TranslateController extends Controller
         $app->session->setNotice('Translations saved');
         return $this->redirectToPostedUrl();
     }
-
-
 
 }

@@ -84,6 +84,7 @@ class TranslateField extends Model
                 'field' => $field,
                 'value' => $value
             ]);
+
             $this->trigger(self::EVENT_GETCONTENT, $event);
             $value = $event->value;
         }

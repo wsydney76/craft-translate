@@ -49,12 +49,12 @@ class TranslateService extends Component
         $fields = $app->request->getBodyParam('fields');
         if ($fields) {
             foreach ($params['fields'] as $handle => $value) {
-                $entry->$handle = $value;
+                $entry->setFieldValue($handle, $value);
             }
         }
 
         if (!$entry->isDraft) {
-            $entry->scenario = Element::SCENARIO_LIVE;
+            // $entry->scenario = Element::SCENARIO_LIVE;
         }
         return $app->elements->saveElement($entry);
     }
@@ -85,8 +85,8 @@ class TranslateService extends Component
                 if (array_key_exists('fields', $blockParams)) {
                     foreach ($blockParams['fields'] as $handle => $value) {
                         /** @noinspection PhpUndefinedVariableInspection */
-                        $block->$handle = $value;
-                        $block->scenario = Element::SCENARIO_LIVE;
+                        $block->setFieldValue($handle, $value);
+                        // $block->scenario = Element::SCENARIO_LIVE;
                         if (!$app->elements->saveElement($block)) {
                             // TODO: Proper error handling
                             $entry->addError($handle, 'Error in block ' . $block->id . ': ' . $block->getErrorSummary(true)[0]);

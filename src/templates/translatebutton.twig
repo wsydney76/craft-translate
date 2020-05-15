@@ -2,11 +2,14 @@
     {% if entry.id and entry.isDraft %}
 
         {% set from = entry.site %}
-        {% for to in craft.app.sites.allSites if to.id != from.id %}
+        {% for to in craft.app.sites.allSites
+            if to.id != from.id
+            and to.groupId == from.groupId
+            and to.language != from.language %}
 
             <a id="translate-btn-{{ from.id }}-{{ to.id }}" class="btn submit" style="margin:6px 0px;display:inline-block"
                href='{{ cpUrl("translate/translateentry/#{entry.id}/#{from.id}/#{to.id}", {site:from.handle, draftId:entry.draftId}) }}'>
-                {{ 'Translate'|t('translate') }} {{ from.handle }} &gt; {{ to.handle }}</a>
+                 &gt; {{ to.language }}</a>
         {% endfor %}
 
     {% endif %}

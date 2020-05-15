@@ -71,7 +71,6 @@
 
     {{ heading('Slug', 'field') }}
     {{ content(entryFrom.slug, translateEntry.target.slug , "slug") }}
-
     {% for item in translateEntry.items %}
         {{ heading(item.caption, item.type) }}
         {% if item.type == 'field' %}

@@ -7,7 +7,9 @@ use craft\base\Field;
 use craft\base\Model;
 use craft\elements\Entry;
 use craft\fields\Matrix;
+use craft\fields\Table;
 use craft\models\FieldLayoutTab;
+use function substr;
 
 class TranslateEntry extends Model
 {
@@ -48,10 +50,14 @@ class TranslateEntry extends Model
 
     protected function _handleField(Field $field, $owner = null)
     {
+
         if ($field->hasContentColumn()) {
-            if ($field->getContentColumnType() == 'string' || $field->getContentColumnType() == 'text') {
-                if ($field->translationMethod == 'site' || $field->translationMethod == 'language') {
-                    $this->items[] = new TranslateField($this, $field, $owner);
+            if (!$field instanceof Table) {
+                if (substr($field->getContentColumnType(), 0, 6) == 'string' ||
+                    substr($field->getContentColumnType(), 0, 4) == 'text') {
+                    if ($field->translationMethod == 'site' || $field->translationMethod == 'language') {
+                        $this->items[] = new TranslateField($this, $field, $owner);
+                    }
                 }
             }
         } elseif ($field instanceof Matrix) {
@@ -63,7 +69,6 @@ class TranslateEntry extends Model
                     $this->_handleField($blockField, $block);
                 }
             }
-
         }
     }
 }

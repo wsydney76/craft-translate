@@ -1,5 +1,11 @@
 # Release Notes for Translate
 
+## 2.1 2020-05-19
+
+* Added support for table fields (singleline/multiline only) 
+* Added support for super-table plugin (beta)
+* Added support for neo plugin (beta)
+
 ## 2.0 2019-10-05
 
 * Serious rework under the hook, should be a lot easier to use as a starting point for '

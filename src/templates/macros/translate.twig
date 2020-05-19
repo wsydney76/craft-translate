@@ -1,3 +1,4 @@
+{# @var item \wsydney76\translate\models\TranslateField #}
 {% macro heading(title, type='field') %}
     <div class="field">
         {% switch type %}
@@ -15,9 +16,50 @@
     </div>
 {% endmacro %}
 
+{% macro table(item) %}
+    {% from _self import heading %}
+    {% from _self import content %}
+
+    {% set value1 = item.sourceValue %}
+    {% set value2 = item.targetValue %}
+
+    {% for row in value1 %}
+        {% set rowIndex0 = loop.index0 %}
+        {% set rowIndex = loop.index %}
+        {% for col, column in item.field.columns %}
+            {{ heading(rowIndex  ~ ': ' ~ column.heading ~ " (#{column.type|capitalize})") }}
+            {% set valueFrom = value1[rowIndex0][column.handle] %}
+            {% set valueTo = value2[rowIndex0][column.handle] ?? 'n/a' %}
+            {% set formName = "#{item.formName}[#{rowIndex0}][#{col}]" %}
+            {% switch column.type %}
+
+            {% case "singleline" %}
+                {{ content(valueFrom, valueTo, formName) }}
+            {% case "multiline" %}
+                {{ content(valueFrom, valueTo, formName) }}
+            {% case "date" %}
+                {{ valueFrom|date }}
+                <input type="hidden" name="{{ formName }}" value="{{ valueFrom|date('Y-m-d') }}">
+            {% case "time" %}
+                {{ valueFrom|time }}
+                <input type="hidden" name="{{ formName }}[time]" value="{{ valueFrom|time }}">
+                <input type="hidden" name="{{ formName }}[timezone]" value="{{ valueFrom.timezone }}">
+            {% default %}
+                {{ valueFrom }}
+                <input type="hidden" name="{{ formName }}" value="{{ valueFrom }}">
+            {% endswitch %}
+
+        {% endfor %}
+    {% endfor %}
+{% endmacro %}
+
+
 {% macro content(value1, value2, name, required=false ) %}
     {% from _self import translationLinks %}
+    {% from _self import heading %}
+
     {% if value1 %}
+
         <table class="data" width="95%">
             <tr>
                 <td width="47%" style="vertical-align: top">
@@ -35,6 +77,7 @@
                 </td>
             </tr>
         </table>
+
     {% else %}
         Empty, nothing to translate
     {% endif %}

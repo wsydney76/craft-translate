@@ -8,6 +8,7 @@ use craft\base\Model;
 use craft\elements\Entry;
 use craft\fields\Matrix;
 use craft\models\FieldLayoutTab;
+use verbb\supertable\fields\SuperTableField;
 
 class TranslateEntry extends Model
 {
@@ -48,9 +49,11 @@ class TranslateEntry extends Model
 
     protected function _handleField(Field $field, $owner = null)
     {
+
         if ($field->hasContentColumn()) {
-            if ($field->getContentColumnType() == 'string' || $field->getContentColumnType() == 'text') {
-                if ($field->translationMethod == 'site' || $field->translationMethod == 'language') {
+            if (substr($field->getContentColumnType(), 0, 6) == 'string' ||
+                substr($field->getContentColumnType(), 0, 4) == 'text') {
+                if ($field->translationMethod == 'site' || $field->translationMethod == 'language' || $field->translationMethod == 'siteGroup') {
                     $this->items[] = new TranslateField($this, $field, $owner);
                 }
             }
@@ -63,7 +66,26 @@ class TranslateEntry extends Model
                     $this->_handleField($blockField, $block);
                 }
             }
+        } elseif ($field instanceof \benf\neo\Field) {
+            $this->items[] = new TranslateGroup('neo', $field->name);
+            $blocks = $this->source->getFieldValue($field->handle)->anyStatus()->all();
 
+            foreach ($blocks as $block) {
+                $this->items[] = new TranslateGroup('block', $block->type->name);
+                foreach ($block->type->fieldLayout->fields as $blockField) {
+                    $this->_handleField($blockField, $block);
+                }
+            }
+        }
+        elseif ($field instanceof SuperTableField) {
+            $this->items[] = new TranslateGroup('supertable', $field->name);
+            $blocks = $this->source->getFieldValue($field->handle)->anyStatus()->all();
+
+            foreach ($blocks as $block) {
+                foreach ($block->type->fieldLayout->fields as $blockField) {
+                    $this->_handleField($blockField, $block);
+                }
+            }
         }
     }
 }

@@ -2,11 +2,14 @@
     {% if entry.id and entry.isDraft %}
 
         {% set from = entry.site %}
-        {% for to in craft.app.sites.allSites if to.id != from.id %}
+        {% for to in craft.app.sites.allSites
+            if to.id != from.id
+            and to.groupId == from.groupId
+            and to.language != from.language %}
 
             <a id="translate-btn-{{ from.id }}-{{ to.id }}" class="btn submit" style="margin:6px 0px;display:inline-block"
                href='{{ cpUrl("translate/translateentry/#{entry.id}/#{from.id}/#{to.id}", {site:from.handle, draftId:entry.draftId}) }}'>
-                {{ 'Translate'|t('translate') }} {{ from.handle }} &gt; {{ to.handle }}</a>
+                 &gt; {{ to.language }}</a>
         {% endfor %}
 
     {% endif %}
@@ -14,9 +17,10 @@
 
 
 {% js %}
+
 if (window.draftEditor) {
     window.draftEditor.on('createDraft', function() {
-        $('#translate-wrapper').html('<a href="javascript:location.reload()">{{ 'Enable translation tool'|t('translate') }}</a> ');
+        $('#translate-wrapper').html('<a class="btn submit" href="javascript:location.reload()">{{ 'Enable translation tool'|t('translate') }}</a> ');
     })
 }
 {% endjs %}

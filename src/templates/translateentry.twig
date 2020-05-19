@@ -4,10 +4,12 @@
 {# @var entryFrom \craft\elements\Entry #}
 {# @var entryTo \craft\elements\Entry #}
 {# @var entry \craft\elements\Entry #}
+{# @var translateEntry \wsydney76\translate\models\TranslateEntry #}
+
 {% import '_includes/forms' as forms %}
 {% from 'translate/macros/translate.twig' import heading %}
 {% from 'translate/macros/translate.twig' import content %}
-
+{% from 'translate/macros/translate.twig' import table %}
 
 
 {% requirePermission 'accessPlugin-translate' %}
@@ -71,14 +73,18 @@
 
     {{ heading('Slug', 'field') }}
     {{ content(entryFrom.slug, translateEntry.target.slug , "slug") }}
-
     {% for item in translateEntry.items %}
         {{ heading(item.caption, item.type) }}
         {% if item.type == 'field' %}
             {% if not item.isSimpleField %}
                 <input type="hidden" name="{{ item.blockType.name }}" value="{{ item.blockType.value }}">
             {% endif %}
-            {{ content(item.sourceValue, item.targetValue, item.formName, item.field.required) }}
+            {% if className(item.field) == 'craft\\fields\\Table' %}
+                {{ table(item) }}
+            {% else %}
+                {{ content(item.sourceValue, item.targetValue, item.formName, item.field.required) }}
+            {% endif %}
+
         {% endif %}
     {% endfor %}
 

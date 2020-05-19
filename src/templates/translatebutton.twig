@@ -17,9 +17,10 @@
 
 
 {% js %}
+
 if (window.draftEditor) {
     window.draftEditor.on('createDraft', function() {
-        $('#translate-wrapper').html('<a href="javascript:location.reload()">{{ 'Enable translation tool'|t('translate') }}</a> ');
+        $('#translate-wrapper').html('<a class="btn submit" href="javascript:location.reload()">{{ 'Enable translation tool'|t('translate') }}</a> ');
     })
 }
 {% endjs %}

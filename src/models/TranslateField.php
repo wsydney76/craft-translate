@@ -2,11 +2,14 @@
 
 namespace wsydney76\translate\models;
 
+use benf\neo\elements\Block;
 use Craft;
 use craft\base\Element;
+use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\base\Model;
 use craft\elements\MatrixBlock;
+use verbb\supertable\elements\SuperTableBlockElement;
 use wsydney76 \translate\events\TranslateEvent;
 
 class TranslateField extends Model
@@ -22,8 +25,9 @@ class TranslateField extends Model
     public $caption = '';
     public $ownerField;
     public $isSimpleField = true;
+    public $elementType = '';
 
-    public function __construct(TranslateEntry $entry, Field $field, MatrixBlock $owner = null)
+    public function __construct(TranslateEntry $entry, Field $field, ElementInterface $owner = null)
     {
 
         $this->entry = $entry;
@@ -32,7 +36,18 @@ class TranslateField extends Model
         $this->caption = $field->name;
 
         if ($owner) {
-            $this->targetOwner = MatrixBlock::find()->id($owner->id)->siteId($entry->siteTo->id)->one();
+            if ($owner instanceof MatrixBlock) {
+                $this->targetOwner = MatrixBlock::find()->id($owner->id)->siteId($entry->siteTo->id)->one();
+                $this->elementType = 'matrix';
+            }
+            if ($owner instanceof Block) {
+                $this->targetOwner = Block::find()->id($owner->id)->siteId($entry->siteTo->id)->one();
+                $this->elementType = 'neo';
+            }
+            if ($owner instanceof SuperTableBlockElement) {
+                $this->targetOwner = SuperTableBlockElement::find()->id($owner->id)->siteId($entry->siteTo->id)->one();
+                $this->elementType = 'supertable';
+            }
             $this->isSimpleField = false;
             $this->ownerField = Craft::$app->fields->getFieldById($owner->fieldId);
         }
@@ -56,7 +71,7 @@ class TranslateField extends Model
             return "fields[{$this->field->handle}]";
         }
 
-        return "matrix[{$this->ownerField->handle}][{$this->owner->id}][fields][{$this->field->handle}]";
+        return "{$this->elementType}[{$this->ownerField->handle}][{$this->owner->id}][fields][{$this->field->handle}]";
     }
 
     public function getSourceValue()

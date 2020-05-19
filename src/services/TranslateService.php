@@ -2,6 +2,7 @@
 
 namespace wsydney76\translate\services;
 
+use benf\neo\elements\Block;
 use Craft;
 use craft\base\Component;
 use craft\base\Element;
@@ -46,6 +47,11 @@ class TranslateService extends Component
             $this->_saveBlockElements($entry, $params['siteId'], $matrix, 'matrix');
         }
 
+        $neo = $app->request->getBodyParam('neo');
+        if ($neo) {
+            $this->_saveBlockElements($entry, $params['siteId'], $neo, 'neo');
+        }
+
         $fields = $app->request->getBodyParam('fields');
         if ($fields) {
             foreach ($params['fields'] as $handle => $value) {
@@ -53,9 +59,8 @@ class TranslateService extends Component
             }
         }
 
-        if (!$entry->isDraft) {
-            // $entry->scenario = Element::SCENARIO_LIVE;
-        }
+        $entry->scenario = Element::SCENARIO_ESSENTIALS;
+
         return $app->elements->saveElement($entry);
     }
 
@@ -79,6 +84,8 @@ class TranslateService extends Component
                     $block = $query->ownerId($entry->id)->id($blockId)->siteId($siteId)->one();
                 } elseif ($type == 'matrix') {
                     $block = MatrixBlock::find()->ownerId($entry->id)->id($blockId)->siteId($siteId)->one();
+                } elseif ($type == 'neo') {
+                    $block = Block::find()->ownerId($entry->id)->id($blockId)->siteId($siteId)->one();
                 }
 
                 // \Craft::dd($block);
@@ -86,7 +93,7 @@ class TranslateService extends Component
                     foreach ($blockParams['fields'] as $handle => $value) {
                         /** @noinspection PhpUndefinedVariableInspection */
                         $block->setFieldValue($handle, $value);
-                        // $block->scenario = Element::SCENARIO_LIVE;
+                        $block->scenario = Element::SCENARIO_ESSENTIALS;
                         if (!$app->elements->saveElement($block)) {
                             // TODO: Proper error handling
                             $entry->addError($handle, 'Error in block ' . $block->id . ': ' . $block->getErrorSummary(true)[0]);
